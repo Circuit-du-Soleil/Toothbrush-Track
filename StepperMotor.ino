@@ -11,15 +11,20 @@ void setup() {
 }
 
 void loop() {
-   if (digitalRead(7) == HIGH){
+  if (digitalRead(7) == HIGH) { 
     digitalWrite(DIR_PIN, HIGH);
     digitalWrite(STEP_PIN, HIGH);
+    delayMicroseconds(500);
+    digitalWrite(STEP_PIN, LOW);
+    delayMicroseconds(500);
     Serial.println("Forward");
-
-  } else if (digitalRead(8) == HIGH){
+  } 
+  else if (digitalRead(8) == HIGH) {
     digitalWrite(DIR_PIN, LOW);
     digitalWrite(STEP_PIN, HIGH);
+    delayMicroseconds(500);
+    digitalWrite(STEP_PIN, LOW);
+    delayMicroseconds(500);
     Serial.println("Backwards");
   }
-
 }
