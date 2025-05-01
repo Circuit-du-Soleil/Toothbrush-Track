@@ -15,7 +15,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define STEP_PIN 3
 #define DIR_PIN 4
 
-int delay = 500;
+int delayTime = 500; //this is the delay in between each step in micro seconds
 
 void setup() {
   Serial.begin(9600);
@@ -26,18 +26,22 @@ void setup() {
   //setting the pins for the buttons
   pinMode(7, INPUT_PULLUP);
   pinMode(8, INPUT_PULLUP);
-
+  pinMode(10, INPUT_PULLUP);
+  pinMode(11, INPUT_PULLUP);
   //setting the screen up
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
-  //this sets up a splash screen initially
-  display.display();
+  //this sets up the splash screen
+  delay(1000);
   display.clearDisplay();
-  display.print("The display is functioning, this message will disappear after 2 seconds.");
-  delay(2000); 
-  displayOnScreen(delay);
+
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("Starting...");
+  displayOnScreen(delayTime);
 
 }
 
@@ -46,29 +50,32 @@ void loop() {
   if (digitalRead(7) == HIGH) {  //direction: forwards
     digitalWrite(DIR_PIN, HIGH);
     digitalWrite(STEP_PIN, HIGH);
-    delayMicroseconds(delay);
+    delayMicroseconds(delayTime);
     digitalWrite(STEP_PIN, LOW);
-    delayMicroseconds(delay);
+    delayMicroseconds(delayTime);
   } 
   else if (digitalRead(8) == HIGH) { //direction: backwards
     digitalWrite(DIR_PIN, LOW);
     digitalWrite(STEP_PIN, HIGH);
-    delayMicroseconds(delay);
+    delayMicroseconds(delayTime);
     digitalWrite(STEP_PIN, LOW);
-    delayMicroseconds(delay);
+    delayMicroseconds(delayTime);
   } else if (digitalRead(10) == HIGH){ //speed decreases as the delay increases
-    delay += 1;
-    displayOnScreen(delay);
+    delayTime += 100;
+    displayOnScreen(delayTime);
+    delay(500);
   } else if (digitalRead(11) == HIGH){ //speed increases as delay decreases
-    delay-=1;
-    displayOnScreen(delay);
+    delayTime-=100;
+    displayOnScreen(delayTime);
+    delay(500);
   }
 }
 
-void displayOnScreen(int number){ //shows the number on the screen.
+void displayOnScreen(int number){
   display.clearDisplay();
-  display.print(number);
   display.setCursor(SCREEN_WIDTH/6, SCREEN_HEIGHT/6);
   display.setTextSize(5);
+  display.print(number);
   display.display();
+  delay(100);
 }
